@@ -1,5 +1,4 @@
 import pygame as pg
-import numpy as np
 
 
 def drawcenteredsquare(surf, color, pos, size):
@@ -25,7 +24,7 @@ if __name__ == '__main__':
     running = True
     while running:
         # set framerate
-        clock.tick(60)
+        clock.tick(200)
 
         # event loop
         for event in pg.event.get():
@@ -34,15 +33,27 @@ if __name__ == '__main__':
 
         # draw
         screen.fill((0, 0, 0))
-        if pg.mouse.get_pressed()[0]:
-            squares.append(drawcenteredsquare(screen, (255, 255, 255), pg.mouse.get_pos(), 10))
 
+        # map color to mouse position
+        color = (pg.mouse.get_pos()[0] % 255, pg.mouse.get_pos()[1] % 255, pg.mouse.get_pos()[0]*pg.mouse.get_pos()[1] % 255)
+
+        # add squares to memory
+        if pg.mouse.get_pressed()[0] and pg.mouse.get_pos() not in squares:
+            squares.append(drawcenteredsquare(screen, color, pg.mouse.get_pos(), 10))
+
+        # on right click, emtpy the list
+        if pg.mouse.get_pressed()[2]:
+            squares = []
 
         # draw all squares in the list to the screen
         for square in squares:
+            pg.draw.rect(screen, square[1], square[2])
 
-
-
+        # print the framerate and the difference between the current and the last frame
+        print(clock.get_fps(), clock.get_time())
 
         # update screen
         pg.display.flip()
+
+        # q: how can I make the list with squares more efficient
+
